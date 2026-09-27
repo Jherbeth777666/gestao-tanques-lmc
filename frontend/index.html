@@ -3,417 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PostoControl AI • Monitoramento & LMC ANP</title>
+    <title>PostoControl AI • Gestão Executiva</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #070a12;
-            --surface: #0f1626;
-            --surface-card: #141e33;
-            --border: #1f2c47;
-            --border-hover: #3b82f6;
+            --bg-base: #050810;
+            --glass-bg: rgba(15, 22, 38, 0.55);
+            --glass-border: rgba(59, 130, 246, 0.15);
+            --glass-highlight: rgba(255, 255, 255, 0.03);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
+            --primary-hover: #2563eb;
+            --accent: #0ea5e9;
             --text-main: #f8fafc;
             --text-muted: #8899b5;
+            
             --gasolina: #f59e0b;
             --etanol: #10b981;
             --diesel: #06b6d4;
             --aditivada: #a855f7;
+            
             --success: #10b981;
             --danger: #ef4444;
-            --fuel-active: #3b82f6;
+            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            background-color: var(--bg);
+            background-color: var(--bg-base);
             color: var(--text-main);
             min-height: 100vh;
             padding: 2rem;
             background-image: 
-                radial-gradient(circle at 85% 12%, rgba(59, 130, 246, 0.12), transparent 500px),
-                radial-gradient(circle at 10% 88%, rgba(16, 185, 129, 0.08), transparent 500px);
+                radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.1), transparent 400px),
+                radial-gradient(circle at 85% 90%, rgba(14, 165, 233, 0.08), transparent 400px);
+            background-attachment: fixed;
         }
 
-        .container { max-width: 1280px; margin: 0 auto; width: 100%; }
+        .container { max-width: 1300px; margin: 0 auto; width: 100%; }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
             padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
+        .header-logo { display: flex; align-items: center; gap: 1rem; }
         .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #2563eb, #06b6d4);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
-        }
-
-        .header-title h1 {
-            font-size: 1.7rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header-title p { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
-
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(15, 22, 38, 0.9);
-            padding: 5px;
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #2563eb, #0ea5e9);
             border-radius: 14px;
-            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
         }
+        
+        .header-title h1 {
+            font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #93c5fd);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header-title p { color: var(--text-muted); font-size: 0.85rem; margin-top: 3px; font-weight: 500; }
 
+        /* Tabs animadas */
+        .nav-tabs {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
         .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 0.65rem 1.3rem;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
+        .tab-btn:hover { color: #fff; }
         .tab-btn.active {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(37, 99, 235, 0.8));
+            color: #fff; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
         .section-label {
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.12em; color: #93c5fd; margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        /* Grade dos Tanques */
-        .tanques-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-        }
-
+        /* Grade de Tanques */
+        .tanques-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+        
         .tanque-card {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            border-radius: 18px;
-            padding: 1.3rem;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+            background: rgba(10, 15, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px; padding: 1.4rem; cursor: pointer;
+            transition: all 0.25s; position: relative; overflow: hidden;
         }
-
-        .tanque-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .tanque-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .tanque-card:hover { transform: translateY(-4px); border-color: rgba(59, 130, 246, 0.4); background: rgba(15, 25, 45, 0.7); }
         .tanque-card.active {
-            border-color: var(--fuel-active);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
-            background: #111a2f;
+            border-color: var(--primary); background: rgba(15, 28, 55, 0.8);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15), inset 0 0 0 1px var(--primary);
         }
 
         .tanque-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
         .tanque-num { font-size: 1.3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
-        .combustivel-tag { font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .combustivel-tag { font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        .tag-gasolina { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .tag-etanol { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .tag-diesel { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3); }
-        .tag-aditivada { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
-
-        .capacidade-info { font-size: 0.85rem; color: var(--text-muted); }
+        .tag-gasolina { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .tag-etanol { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .tag-diesel { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+        .tag-aditivada { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
 
         /* Workspace Principal */
         .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
-        @media (max-width: 960px) { .workspace { grid-template-columns: 1fr; } }
+        @media (max-width: 1024px) { .workspace { grid-template-columns: 1fr; } }
 
-        .card-panel {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2.2rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        .input-group { margin-bottom: 1.4rem; }
-        .input-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
+        /* Inputs Premium */
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; }
         .input-text {
-            width: 100%;
-            background: #090e18;
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 0.95rem 1.2rem;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #fff;
-            outline: none;
-            transition: all 0.2s;
+            width: 100%; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+            padding: 0.95rem 1.2rem; font-size: 1rem; font-weight: 600; color: #fff; outline: none; transition: all 0.2s;
         }
-
-        .input-text:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
-        .input-regua { font-size: 2.3rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; padding: 1rem 1.4rem; }
-        .slider-regua { width: 100%; margin-top: 1rem; accent-color: var(--primary); cursor: pointer; height: 8px; }
+        .input-text:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(0, 0, 0, 0.4); }
+        
+        .input-regua { font-size: 2.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; padding: 1.2rem; text-align: center; letter-spacing: -2px; color: #38bdf8; }
+        .slider-regua { width: 100%; margin-top: 1rem; accent-color: var(--primary); cursor: pointer; height: 6px; }
 
         .btn-salvar {
-            width: 100%;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            border: none;
-            color: #fff;
-            padding: 1.15rem;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            width: 100%; background: linear-gradient(135deg, #2563eb, #0ea5e9);
+            border: none; color: #fff; padding: 1.15rem; border-radius: 12px;
+            font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-
-        .btn-salvar:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        .btn-salvar:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 15px 25px rgba(37, 99, 235, 0.4); }
         .btn-salvar:active { transform: translateY(0); }
 
-        /* Tanque Visual com Onda Animada */
+        /* Visualizador Tanque */
         .resultado-box { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
-        .litros-display { font-size: 4rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: #38bdf8; line-height: 1; margin: 0.8rem 0 0.3rem; letter-spacing: -0.03em; }
+        .litros-display { font-size: 4.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #fff; line-height: 1; margin: 0.5rem 0; letter-spacing: -3px; text-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
 
         .tank-horizontal-container {
-            width: 100%;
-            max-width: 380px;
-            height: 160px;
-            background: #080c16;
-            border: 3px solid #223250;
-            border-radius: 80px;
-            position: relative;
-            overflow: hidden;
-            margin: 1.5rem auto 1rem;
-            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.4);
+            width: 100%; max-width: 400px; height: 160px; background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.05); border-radius: 80px; position: relative; overflow: hidden; margin: 1.5rem auto; box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+        .tank-scale { position: absolute; left: 20px; top: 15px; bottom: 15px; width: 2px; background: rgba(255, 255, 255, 0.1); z-index: 5; display: flex; flex-direction: column; justify-content: space-between; }
+        .tank-scale-tick { width: 10px; height: 2px; background: rgba(255, 255, 255, 0.3); }
+        .tank-liquid-wave { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(180deg, #38bdf8, #2563eb); transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; }
+        .wave-svg { position: absolute; top: -14px; left: 0; width: 200%; height: 20px; fill: #38bdf8; animation: moveWave 3s linear infinite; }
+        @keyframes moveWave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .tank-percentage-float { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: #fff; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); z-index: 6; }
+
+        /* MODULO DE ENCERRANTES (BICOS) */
+        .bicos-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px; padding: 1rem; margin-bottom: 1.25rem;
+        }
+        .bico-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; align-items: end; margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .bico-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .bico-row input { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.7rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; width: 100%; }
+        .bico-row input:focus { border-color: var(--primary); outline: none; }
+        .bico-venda { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #34d399; text-align: right; padding-bottom: 0.5rem;}
+        
+        .btn-add-bico {
+            background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); color: var(--text-muted);
+            width: 100%; padding: 0.6rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-add-bico:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .lmc-venda-total {
+            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* Graduação métrica do tanque (régua vertical no tanque) */
-        .tank-scale {
-            position: absolute;
-            left: 20px;
-            top: 10px;
-            bottom: 10px;
-            width: 2px;
-            background: rgba(255, 255, 255, 0.15);
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .tank-scale-tick {
-            width: 8px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .tank-liquid-wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background: linear-gradient(180deg, rgba(56, 189, 248, 0.8), rgba(37, 99, 235, 0.95));
-            transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-        }
-
-        .wave-svg {
-            position: absolute;
-            top: -14px;
-            left: 0;
-            width: 200%;
-            height: 20px;
-            fill: rgba(56, 189, 248, 0.9);
-            animation: moveWave 3s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
-        }
-
-        @keyframes moveWave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .tank-percentage-float {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            font-weight: 900;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
-            z-index: 6;
-        }
-
-        /* Card de Auditoria IA */
-        .card-ia-auditor {
-            background: linear-gradient(145deg, #10192e, #0b1220);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            border-radius: 20px;
-            padding: 1.8rem;
-            margin-top: 1.5rem;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        }
-
-        .card-ia-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .btn-ia-scan {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            border: none;
-            color: #fff;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
-        }
-
+        /* Card IA Auditor */
+        .card-ia-auditor { background: linear-gradient(145deg, rgba(16, 25, 46, 0.8), rgba(11, 18, 32, 0.8)); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 20px; padding: 1.8rem; margin-top: 1.5rem; position: relative; }
+        .card-ia-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .btn-ia-scan { background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; color: #fff; padding: 0.6rem 1.2rem; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); transition: 0.2s; }
         .btn-ia-scan:hover { filter: brightness(1.15); transform: scale(1.02); }
+        .ia-output-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; max-height: 250px; overflow-y: auto; white-space: pre-line; }
 
-        .ia-output-box {
-            background: #080c16;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.25rem;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #cbd5e1;
-            max-height: 280px;
-            overflow-y: auto;
-            white-space: pre-line;
-        }
-
-        /* Status ANP */
-        .badge-anp {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .anp-conforme { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-        .anp-perda { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
-        .anp-sobra { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
-
+        /* KPI LMC */
         .lmc-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; margin: 1.25rem 0; }
-        .lmc-kpi { background: #080d18; padding: 1.1rem; border-radius: 14px; border: 1px solid var(--border); text-align: left; }
+        .lmc-kpi { background: rgba(0,0,0,0.3); padding: 1.25rem; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
         .lmc-kpi-title { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-        .lmc-kpi-val { font-size: 1.35rem; font-weight: 800; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+        .lmc-kpi-val { font-size: 1.5rem; font-weight: 800; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
-        td { padding: 1.05rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
+        .badge-anp { display: inline-block; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .anp-conforme { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .anp-perda { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .anp-sobra { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
 
-        .toast {
-            position: fixed; bottom: 2rem; right: 2rem; background: #10b981; color: #fff;
-            padding: 1rem 1.6rem; border-radius: 14px; font-weight: 700; display: none; z-index: 999;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 1.1rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.9rem; }
+
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: #10b981; color: #fff; padding: 1rem 1.6rem; border-radius: 14px; font-weight: 700; display: none; z-index: 999; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- HEADER -->
+        <header class="glass-panel" style="padding: 1.5rem 2rem; margin-bottom: 2rem;">
             <div class="header-logo">
                 <div class="logo-icon">⛽</div>
                 <div class="header-title">
-                    <h1>PostoControl AI</h1>
-                    <p>Arqueação milimétrica, conformidade ANP (0,6%) e Auditoria com Gemini</p>
+                    <h1>PostoControl Executive</h1>
+                    <p>Gestão Volumétrica, Encerrantes e IA Regulatória</p>
                 </div>
             </div>
             <div class="nav-tabs">
-                <button class="tab-btn active" onclick="trocarAba('regua')">Régua Instantânea</button>
-                <button class="tab-btn" onclick="trocarAba('lmc')">Fechamento LMC & IA</button>
+                <button class="tab-btn active" onclick="trocarAba('regua')">Régua Física</button>
+                <button class="tab-btn" onclick="trocarAba('lmc')">Apuração Bicos & LMC</button>
             </div>
         </header>
 
-        <div class="section-label">⚡ Tanques em Operação</div>
+        <div class="section-label">⚡ Tanques Disponíveis</div>
         <div class="tanques-grid" id="tanques-container"></div>
 
-        <!-- ABA 1: RÉGUA INSTANTÂNEA -->
+        <!-- ABA 1: RÉGUA -->
         <div id="view-regua">
             <div class="workspace">
-                <div class="card-panel">
+                <div class="glass-panel">
                     <div class="section-label">Aferição de Pista</div>
                     <div class="input-group">
                         <label>Altura na Régua (Centímetros)</label>
                         <input type="number" id="input-cm" class="input-text input-regua" placeholder="0" min="0" max="191" step="0.5" autofocus>
                         <input type="range" id="slider-cm" class="slider-regua" min="0" max="191" step="0.5" value="0">
                     </div>
-                    <button class="btn-salvar" onclick="salvarMedicao()">
-                        <span>Salvar Aferição no Supabase</span> ➔
+                    <button class="btn-salvar" onclick="salvarMedicao()" style="margin-top:2rem;">
+                        Registar Medição Física
                     </button>
                 </div>
 
-                <div class="card-panel">
+                <div class="glass-panel">
                     <div class="resultado-box">
-                        <div class="section-label">Volume Real em Tanque</div>
-                        <div class="litros-display" id="display-litros">0,0 <span style="font-size:1.6rem; color:var(--text-muted)">L</span></div>
+                        <div class="section-label">Volume Calculado</div>
+                        <div class="litros-display" id="display-litros">0,0 <span style="font-size:1.8rem; color:var(--text-muted)">L</span></div>
                         
-                        <!-- Tanque com Onda Líquida SVG e Régua -->
                         <div class="tank-horizontal-container">
                             <div class="tank-scale">
-                                <div class="tank-scale-tick"></div>
-                                <div class="tank-scale-tick"></div>
-                                <div class="tank-scale-tick"></div>
-                                <div class="tank-scale-tick"></div>
-                                <div class="tank-scale-tick"></div>
+                                <div class="tank-scale-tick"></div><div class="tank-scale-tick"></div>
+                                <div class="tank-scale-tick"></div><div class="tank-scale-tick"></div>
                             </div>
                             <div class="tank-liquid-wave" id="tank-fill">
                                 <svg class="wave-svg" viewBox="0 0 500 20" preserveAspectRatio="none">
@@ -422,120 +278,126 @@
                             </div>
                             <div class="tank-percentage-float" id="display-porcentagem">0%</div>
                         </div>
-
                         <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600;" id="info-tanque-selecionado">-</div>
                     </div>
                 </div>
             </div>
-
-            <div class="card-panel">
-                <div class="section-label">Histórico Recente de Réguas</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data / Hora</th>
-                            <th>Tanque</th>
-                            <th>Combustível</th>
-                            <th>Régua (cm)</th>
-                            <th>Volume Medido</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historico-regua-body"></tbody>
-                </table>
-            </div>
         </div>
 
-        <!-- ABA 2: FECHAMENTO LMC & IA -->
+        <!-- ABA 2: FECHAMENTO LMC & BICOS -->
         <div id="view-lmc" style="display: none;">
             <div class="workspace">
-                <div class="card-panel">
-                    <div class="section-label">Balanço Diário de Combustível</div>
-                    <div class="input-group">
-                        <label>Data do Fechamento</label>
-                        <input type="date" id="lmc-data" class="input-text">
-                    </div>
-                    <div class="input-group">
-                        <label>Estoque Inicial (L) <small style="color:#60a5fa">(automático do último fechamento)</small></label>
-                        <input type="number" id="lmc-estoque-ini" class="input-text" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label>Recebimentos / Descargas (Litros em NF-e)</label>
-                        <input type="number" id="lmc-recebimentos" class="input-text" value="0" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label>Vendas dos Bicos / Encerrantes (L)</label>
-                        <input type="number" id="lmc-vendas" class="input-text" placeholder="Ex: 2150.0" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label>Estoque Físico Final (Régua cm ou Litros)</label>
-                        <div style="display:flex; gap:0.6rem;">
-                            <input type="number" id="lmc-regua-cm" class="input-text" placeholder="Régua cm (calcula auto)">
-                            <input type="number" id="lmc-estoque-fis" class="input-text" placeholder="Litros aferidos">
+                <!-- PAINEL ESQUERDO: ENTRADAS DE DADOS -->
+                <div class="glass-panel">
+                    <div class="section-label">1. Recebimento de Combustível (NF-e)</div>
+                    <div class="input-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                        <div>
+                            <label>Data</label>
+                            <input type="date" id="lmc-data" class="input-text">
+                        </div>
+                        <div>
+                            <label>Descarga (Litros NF-e)</label>
+                            <input type="number" id="lmc-recebimentos" class="input-text" value="0" step="0.1">
                         </div>
                     </div>
-                    <button class="btn-salvar" onclick="salvarFechamentoLMC()">
-                        <span>Registrar Fechamento Oficial</span>
+                    <input type="hidden" id="lmc-estoque-ini" value="0">
+
+                    <div class="section-label" style="margin-top:2rem;">2. Apuração por Encerrantes (Bicos)</div>
+                    
+                    <!-- CALCULADORA DE BICOS -->
+                    <div class="bicos-container">
+                        <div id="lista-bicos">
+                            <!-- Bico 1 Default -->
+                            <div class="bico-row">
+                                <div>
+                                    <label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Inicial</label>
+                                    <input type="number" class="enc-ini" value="100000.0" step="0.1" oninput="calcularVendaBicos()">
+                                </div>
+                                <div>
+                                    <label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Final</label>
+                                    <input type="number" class="enc-fin" value="100000.0" step="0.1" oninput="calcularVendaBicos()">
+                                </div>
+                                <div class="bico-venda"><span class="venda-val">0.0</span> <span style="font-size:0.8rem; color:#8899b5">L</span></div>
+                            </div>
+                        </div>
+                        <button class="btn-add-bico" onclick="adicionarBico()">+ Adicionar Bico / Bomba</button>
+                    </div>
+                    
+                    <div class="lmc-venda-total">
+                        <div>
+                            <div style="font-size:0.8rem; font-weight:700; color:#34d399; text-transform:uppercase;">Vendas Totais Computadas</div>
+                            <div style="font-size:0.75rem; color:var(--text-muted)">Soma dos encerrantes das bombas</div>
+                        </div>
+                        <div style="font-size:1.8rem; font-weight:800; font-family:'JetBrains Mono', monospace; color:#fff;">
+                            <span id="lmc-vendas-display">0.0</span> <span style="font-size:1rem; color:#34d399">L</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="lmc-vendas" value="0">
+
+                    <div class="section-label" style="margin-top:2rem;">3. Régua Física de Fechamento</div>
+                    <div class="input-group">
+                        <input type="number" id="lmc-regua-cm" class="input-text" placeholder="Digite os centímetros da régua no fim do dia (ex: 85.5)">
+                        <input type="hidden" id="lmc-estoque-fis">
+                    </div>
+
+                    <button class="btn-salvar" onclick="salvarFechamentoLMC()" style="margin-top:2rem;">
+                        ✓ Registar Fechamento Fiscal (ANP)
                     </button>
                 </div>
 
-                <div class="card-panel">
-                    <div class="resultado-box">
+                <!-- PAINEL DIREITO: RESULTADOS & IA -->
+                <div class="glass-panel">
+                    <div class="resultado-box" style="justify-content: flex-start;">
                         <div class="section-label">Balanço Volumétrico ANP</div>
-                        <div style="margin: 0.8rem 0;" id="lmc-status-badge">
+                        <div style="margin: 0.5rem 0 1.5rem;" id="lmc-status-badge">
                             <span class="badge-anp anp-conforme">AGUARDANDO DADOS</span>
                         </div>
+                        
                         <div class="lmc-kpi-grid">
                             <div class="lmc-kpi">
                                 <div class="lmc-kpi-title">Estoque Escritural</div>
-                                <div class="lmc-kpi-val" id="kpi-escritural">0.0 L</div>
+                                <div class="lmc-kpi-val" id="kpi-escritural" style="color:#93c5fd">0.0 L</div>
                             </div>
                             <div class="lmc-kpi">
-                                <div class="lmc-kpi-title">Estoque Físico</div>
-                                <div class="lmc-kpi-val" id="kpi-fisico">0.0 L</div>
+                                <div class="lmc-kpi-title">Estoque Físico (Régua)</div>
+                                <div class="lmc-kpi-val" id="kpi-fisico" style="color:#fff">0.0 L</div>
                             </div>
                             <div class="lmc-kpi">
-                                <div class="lmc-kpi-title">Perda / Sobra</div>
+                                <div class="lmc-kpi-title">Perda / Sobra (Volume)</div>
                                 <div class="lmc-kpi-val" id="kpi-variacao-l">0.0 L</div>
                             </div>
                             <div class="lmc-kpi">
-                                <div class="lmc-kpi-title">Variação % (Tolerância 0,6%)</div>
+                                <div class="lmc-kpi-title">Variação (Margem 0,6%)</div>
                                 <div class="lmc-kpi-val" id="kpi-variacao-p">0.000%</div>
                             </div>
                         </div>
 
-                        <!-- Card de Auditoria com IA -->
+                        <!-- Card IA -->
                         <div class="card-ia-auditor" style="width: 100%;">
                             <div class="card-ia-header">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:1.1rem">🤖</span>
-                                    <strong style="font-size:0.9rem;">Auditor Fiscal com IA</strong>
+                                    <span style="font-size:1.2rem">🤖</span>
+                                    <strong style="font-size:0.95rem; color:#fff;">Auditor Regulatória Gemini</strong>
                                 </div>
                                 <button class="btn-ia-scan" id="btn-ia-scan" onclick="solicitarAuditoriaIA()">
-                                    <span>Auditar com Gemini</span> ✨
+                                    Gerar Parecer IA
                                 </button>
                             </div>
                             <div class="ia-output-box" id="ia-output">
-                                Clique em <strong>"Auditar com Gemini"</strong> para obter parecer técnico detalhado, cálculo de risco e justificativa regulatória para o LMC.
+                                Efetue o fechamento dos encerrantes e clique para obter a auditoria técnica e o parecer de conformidade pronto para o Livro LMC.
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card-panel">
-                <div class="section-label">Histórico Oficial LMC</div>
+            <!-- Tabela LMC -->
+            <div class="glass-panel">
+                <div class="section-label">Livro Diário de Movimentação (Registos Consolidados)</div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Data</th>
-                            <th>Tanque</th>
-                            <th>Est. Inicial</th>
-                            <th>Entradas</th>
-                            <th>Vendas</th>
-                            <th>Est. Físico</th>
-                            <th>Variação</th>
-                            <th>Var. %</th>
-                            <th>Status ANP</th>
+                            <th>Data</th><th>Tanque</th><th>Est. Inicial</th><th>Entradas</th><th>Vendas</th><th>Est. Físico</th><th>Variação</th><th>Status ANP</th>
                         </tr>
                     </thead>
                     <tbody id="historico-lmc-body"></tbody>
@@ -544,27 +406,42 @@
         </div>
     </div>
 
+    <!-- Modal Login Remanescente do ficheiro original -->
+    <div id="modal-login" style="position:fixed; inset:0; background:rgba(5,8,16,0.95); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div class="glass-panel" style="width:100%; max-width:400px; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔒</div>
+            <h2 style="font-size:1.5rem; font-weight:800; color:#fff; margin-bottom:0.3rem;">PostoControl Admin</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.5rem;">Acesso à gestão operacional</p>
+            <input type="text" id="login-user" placeholder="Utilizador" class="input-text" style="margin-bottom:1rem;">
+            <input type="password" id="login-pass" placeholder="Palavra-passe" class="input-text" style="margin-bottom:1.5rem;">
+            <button onclick="efetuarLogin()" class="btn-salvar">Entrar</button>
+            <div id="login-erro" style="color:#ef4444; font-size:0.85rem; margin-top:1rem; display:none; font-weight:600;">Credenciais inválidas.</div>
+        </div>
+    </div>
+
     <div class="toast" id="toast">Operação realizada com sucesso!</div>
 
     <script>
-        let tanques = [];
-        let tanqueAtual = null;
+        // --- AUTENTICACAO ---
+        async function efetuarLogin() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            try {
+                const res = await fetch('/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({usuario: u, senha: p}) });
+                if(res.ok) { sessionStorage.setItem('posto_auth', 'true'); document.getElementById('modal-login').style.display = 'none'; } 
+                else { document.getElementById('login-erro').style.display = 'block'; }
+            } catch(e) { alert('Erro ao conectar.'); }
+        }
+        if (sessionStorage.getItem('posto_auth') === 'true') { document.addEventListener("DOMContentLoaded", () => { const m = document.getElementById('modal-login'); if (m) m.style.display = 'none'; }); }
 
-        const CONFIG_TANQUES = {
-            10000: { r: 0.955, l: 3.65 },
-            15000: { r: 0.955, l: 5.45 },
-            20000: { r: 0.955, l: 7.25 },
-            7500:  { r: 0.955, l: 2.64 }
-        };
+        // --- SISTEMA CORE ---
+        let tanques = []; let tanqueAtual = null;
+        const CONFIG_TANQUES = { 10000: { r: 0.955, l: 3.65 }, 15000: { r: 0.955, l: 5.45 }, 20000: { r: 0.955, l: 7.25 }, 7500:  { r: 0.955, l: 2.64 } };
 
         function calcularLitragemJS(capacidade, h_cm) {
-            if (!h_cm || h_cm <= 0) return 0;
-            if (h_cm >= 191) return capacidade;
-            const config = CONFIG_TANQUES[capacidade];
-            const h = h_cm / 100.0;
-            const r = 0.955;
-            const termoAcos = Math.acos((r - h) / r);
-            const termoRaiz = (r - h) * Math.sqrt(Math.max(0, 2 * r * h - h * h));
+            if (!h_cm || h_cm <= 0) return 0; if (h_cm >= 191) return capacidade;
+            const config = CONFIG_TANQUES[capacidade]; const h = h_cm / 100.0; const r = 0.955;
+            const termoAcos = Math.acos((r - h) / r); const termoRaiz = (r - h) * Math.sqrt(Math.max(0, 2 * r * h - h * h));
             const areaLiquido = (r * r * termoAcos) - termoRaiz;
             if (config) return Math.round(areaLiquido * config.l * 1000 * 10) / 10;
             return Math.round(capacidade * (areaLiquido / (Math.PI * r * r)) * 10) / 10;
@@ -574,124 +451,109 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             if (aba === 'regua') {
                 event.target.classList.add('active');
-                document.getElementById('view-regua').style.display = 'block';
-                document.getElementById('view-lmc').style.display = 'none';
+                document.getElementById('view-regua').style.display = 'block'; document.getElementById('view-lmc').style.display = 'none';
             } else {
                 event.target.classList.add('active');
-                document.getElementById('view-regua').style.display = 'none';
-                document.getElementById('view-lmc').style.display = 'block';
-                carregarSugestaoEstoque();
-                carregarHistoricoLMC();
+                document.getElementById('view-regua').style.display = 'none'; document.getElementById('view-lmc').style.display = 'block';
+                carregarSugestaoEstoque(); carregarHistoricoLMC();
             }
         }
 
         async function carregarTanques() {
-            const res = await fetch('/tanques/');
-            tanques = await res.json();
-            renderizarTanques();
-            if (tanques.length > 0) selecionarTanque(tanques[0].id);
+            const res = await fetch('/tanques/'); tanques = await res.json();
+            renderizarTanques(); if (tanques.length > 0) selecionarTanque(tanques[0].id);
         }
 
         function renderizarTanques() {
             const container = document.getElementById('tanques-container');
             container.innerHTML = tanques.map(t => {
                 const c = t.tipo_combustivel.toLowerCase();
-                let tag = 'tag-gasolina';
-                if (c.includes('etanol')) tag = 'tag-etanol';
-                if (c.includes('diesel')) tag = 'tag-diesel';
-                if (c.includes('aditivada')) tag = 'tag-aditivada';
-
+                let tag = 'tag-gasolina'; if (c.includes('etanol')) tag = 'tag-etanol'; if (c.includes('diesel')) tag = 'tag-diesel'; if (c.includes('aditivada')) tag = 'tag-aditivada';
                 return `
                     <div class="tanque-card ${tanqueAtual?.id === t.id ? 'active' : ''}" onclick="selecionarTanque(${t.id})">
-                        <div class="tanque-header">
-                            <span class="tanque-num">Tanque 0${t.numero_tanque}</span>
-                            <span class="combustivel-tag ${tag}">${t.tipo_combustivel}</span>
-                        </div>
-                        <div class="capacidade-info">Capacidade Máxima: <strong>${t.capacidade_maxima.toLocaleString('pt-BR')} L</strong></div>
-                    </div>
-                `;
+                        <div class="tanque-header"><span class="tanque-num">Tanque 0${t.numero_tanque}</span><span class="combustivel-tag ${tag}">${t.tipo_combustivel}</span></div>
+                        <div style="font-size:0.8rem; color:var(--text-muted)">Capacidade Máxima: <strong>${t.capacidade_maxima.toLocaleString('pt-BR')} L</strong></div>
+                    </div>`;
             }).join('');
         }
 
         function selecionarTanque(id) {
-            tanqueAtual = tanques.find(t => t.id === id);
-            renderizarTanques();
-            document.getElementById('info-tanque-selecionado').innerText = 
-                `Tanque 0${tanqueAtual.numero_tanque} • ${tanqueAtual.tipo_combustivel} (${tanqueAtual.capacidade_maxima.toLocaleString('pt-BR')} L)`;
-            atualizarCalculoRegua();
-            carregarSugestaoEstoque();
+            tanqueAtual = tanques.find(t => t.id === id); renderizarTanques();
+            document.getElementById('info-tanque-selecionado').innerText = `Tanque 0${tanqueAtual.numero_tanque} • ${tanqueAtual.tipo_combustivel}`;
+            atualizarCalculoRegua(); carregarSugestaoEstoque(); resetarBicos();
         }
 
-        // Eventos da Régua
-        const inputCm = document.getElementById('input-cm');
-        const sliderCm = document.getElementById('slider-cm');
+        // --- ABA RÉGUA ---
+        const inputCm = document.getElementById('input-cm'); const sliderCm = document.getElementById('slider-cm');
         inputCm.addEventListener('input', () => { sliderCm.value = inputCm.value || 0; atualizarCalculoRegua(); });
         sliderCm.addEventListener('input', () => { inputCm.value = sliderCm.value; atualizarCalculoRegua(); });
 
         function atualizarCalculoRegua() {
-            if (!tanqueAtual) return;
-            const cm = parseFloat(inputCm.value) || 0;
+            if (!tanqueAtual) return; const cm = parseFloat(inputCm.value) || 0;
             const litros = calcularLitragemJS(tanqueAtual.capacidade_maxima, cm);
             const perc = Math.min(100, Math.round((litros / tanqueAtual.capacidade_maxima) * 100));
-            document.getElementById('display-litros').innerHTML = `${litros.toLocaleString('pt-BR', {minimumFractionDigits: 1})} <span style="font-size:1.6rem; color:var(--text-muted)">L</span>`;
-            document.getElementById('display-porcentagem').innerText = `${perc}%`;
-            document.getElementById('tank-fill').style.height = `${perc}%`;
+            document.getElementById('display-litros').innerHTML = `${litros.toLocaleString('pt-BR', {minimumFractionDigits: 1})} <span style="font-size:1.8rem; color:var(--text-muted)">L</span>`;
+            document.getElementById('display-porcentagem').innerText = `${perc}%`; document.getElementById('tank-fill').style.height = `${perc}%`;
         }
 
         async function salvarMedicao() {
-            const cm = parseFloat(inputCm.value);
-            if (isNaN(cm) || cm < 0) return alert('Informe uma altura válida na régua.');
-            const res = await fetch('/medicoes/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tanque_id: tanqueAtual.id, altura_cm: cm })
+            const cm = parseFloat(inputCm.value); if (isNaN(cm) || cm < 0) return alert('Informe uma altura válida na régua.');
+            const res = await fetch('/medicoes/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tanque_id: tanqueAtual.id, altura_cm: cm }) });
+            if (res.ok) { mostrarToast('Aferição gravada com sucesso!'); }
+        }
+
+        // --- ABA LMC & BICOS (ENCERRANTES) ---
+        function adicionarBico() {
+            const div = document.createElement('div'); div.className = 'bico-row';
+            div.innerHTML = `
+                <div><label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Inicial</label><input type="number" class="enc-ini" value="100000.0" step="0.1" oninput="calcularVendaBicos()"></div>
+                <div><label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Final</label><input type="number" class="enc-fin" value="100000.0" step="0.1" oninput="calcularVendaBicos()"></div>
+                <div class="bico-venda"><span class="venda-val">0.0</span> <span style="font-size:0.8rem; color:#8899b5">L</span></div>`;
+            document.getElementById('lista-bicos').appendChild(div);
+        }
+
+        function resetarBicos() {
+            document.getElementById('lista-bicos').innerHTML = `
+                <div class="bico-row">
+                    <div><label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Inicial</label><input type="number" class="enc-ini" value="100000.0" step="0.1" oninput="calcularVendaBicos()"></div>
+                    <div><label style="font-size:0.7rem; color:var(--text-muted)">Encerrante Final</label><input type="number" class="enc-fin" value="100000.0" step="0.1" oninput="calcularVendaBicos()"></div>
+                    <div class="bico-venda"><span class="venda-val">0.0</span> <span style="font-size:0.8rem; color:#8899b5">L</span></div>
+                </div>`;
+            calcularVendaBicos();
+        }
+
+        function calcularVendaBicos() {
+            let totalVendas = 0;
+            const rows = document.querySelectorAll('.bico-row');
+            rows.forEach(row => {
+                const ini = parseFloat(row.querySelector('.enc-ini').value) || 0;
+                const fin = parseFloat(row.querySelector('.enc-fin').value) || 0;
+                let venda = fin - ini;
+                if (venda < 0) venda = 0; // Protecao contra virada de relogio simplificada
+                row.querySelector('.venda-val').innerText = venda.toFixed(1);
+                totalVendas += venda;
             });
-            if (res.ok) { mostrarToast('Aferição gravada com sucesso!'); carregarHistoricoRegua(); }
-            else { const e = await res.json(); alert(e.detail || 'Erro ao gravar medição'); }
+            document.getElementById('lmc-vendas-display').innerText = totalVendas.toLocaleString('pt-BR', {minimumFractionDigits: 1});
+            document.getElementById('lmc-vendas').value = totalVendas;
+            simularLMC();
         }
 
-        async function carregarHistoricoRegua() {
-            const res = await fetch('/medicoes/');
-            const dados = await res.json();
-            const tb = document.getElementById('historico-regua-body');
-            tb.innerHTML = dados.slice(0, 6).map(m => {
-                const t = tanques.find(x => x.id === m.tanque_id) || { numero_tanque: m.tanque_id, tipo_combustivel: '-' };
-                return `
-                    <tr>
-                        <td>${new Date(m.data_medicao).toLocaleString('pt-BR')}</td>
-                        <td><strong>Tanque 0${t.numero_tanque}</strong></td>
-                        <td>${t.tipo_combustivel}</td>
-                        <td>${m.altura_cm ? m.altura_cm + ' cm' : '-'}</td>
-                        <td><strong style="color:#38bdf8;">${m.volume_medido.toLocaleString('pt-BR')} L</strong></td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // LMC & IA
         async function carregarSugestaoEstoque() {
-            if (!tanqueAtual) return;
-            document.getElementById('lmc-data').value = new Date().toISOString().split('T')[0];
+            if (!tanqueAtual) return; document.getElementById('lmc-data').value = new Date().toISOString().split('T')[0];
             try {
-                const res = await fetch(`/lmc/ultimo-estoque/${tanqueAtual.id}`);
-                const data = await res.json();
+                const res = await fetch(`/lmc/ultimo-estoque/${tanqueAtual.id}`); const data = await res.json();
                 document.getElementById('lmc-estoque-ini').value = data.estoque_inicial_sugerido || 0;
-            } catch (e) { console.error(e); }
+            } catch (e) {}
             simularLMC();
         }
 
         const lmcReguaCm = document.getElementById('lmc-regua-cm');
-        const lmcEstoqueFis = document.getElementById('lmc-estoque-fis');
         lmcReguaCm.addEventListener('input', () => {
-            if (tanqueAtual && lmcReguaCm.value) {
-                lmcEstoqueFis.value = calcularLitragemJS(tanqueAtual.capacidade_maxima, parseFloat(lmcReguaCm.value));
-            }
+            if (tanqueAtual && lmcReguaCm.value) { document.getElementById('lmc-estoque-fis').value = calcularLitragemJS(tanqueAtual.capacidade_maxima, parseFloat(lmcReguaCm.value)); }
             simularLMC();
         });
 
-        ['lmc-estoque-ini', 'lmc-recebimentos', 'lmc-vendas', 'lmc-estoque-fis'].forEach(id => {
-            document.getElementById(id).addEventListener('input', simularLMC);
-        });
+        ['lmc-recebimentos'].forEach(id => { document.getElementById(id).addEventListener('input', simularLMC); });
 
         function getDadosSimulados() {
             const ini = parseFloat(document.getElementById('lmc-estoque-ini').value) || 0;
@@ -703,11 +565,7 @@
             const variacao = Math.round((fis - escritural) * 10) / 10;
             const base = (ini + rec) > 0 ? (ini + rec) : escritural;
             const perc = base > 0 ? Math.round((variacao / base) * 100 * 1000) / 1000 : 0.0;
-
-            let status_anp = "CONFORME";
-            if (perc < -0.6) status_anp = "PERDA_EXCESSIVA";
-            else if (perc > 0.6) status_anp = "SOBRA_EXCESSIVA";
-
+            let status_anp = "CONFORME"; if (perc < -0.6) status_anp = "PERDA_EXCESSIVA"; else if (perc > 0.6) status_anp = "SOBRA_EXCESSIVA";
             return { ini, rec, ven, fis, escritural, variacao, perc, status_anp };
         }
 
@@ -715,166 +573,60 @@
             const d = getDadosSimulados();
             document.getElementById('kpi-escritural').innerText = `${d.escritural.toLocaleString('pt-BR')} L`;
             document.getElementById('kpi-fisico').innerText = `${d.fis.toLocaleString('pt-BR')} L`;
-            document.getElementById('kpi-variacao-l').innerText = `${d.variacao > 0 ? '+' : ''}${d.variacao.toLocaleString('pt-BR')} L`;
-            document.getElementById('kpi-variacao-p').innerText = `${d.perc > 0 ? '+' : ''}${d.perc.toFixed(3)}%`;
+            const corVar = d.variacao >= 0 ? '#34d399' : '#f87171';
+            document.getElementById('kpi-variacao-l').innerHTML = `<span style="color:${corVar}">${d.variacao > 0 ? '+' : ''}${d.variacao.toLocaleString('pt-BR')} L</span>`;
+            document.getElementById('kpi-variacao-p').innerHTML = `<span style="color:${corVar}">${d.perc > 0 ? '+' : ''}${d.perc.toFixed(3)}%</span>`;
 
             const badge = document.getElementById('lmc-status-badge');
-            if (d.status_anp === 'CONFORME') {
-                badge.innerHTML = `<span class="badge-anp anp-conforme">✔ CONFORME ANP (Dentro de 0,6%)</span>`;
-            } else if (d.status_anp === 'PERDA_EXCESSIVA') {
-                badge.innerHTML = `<span class="badge-anp anp-perda">🚨 PERDA EXCESSIVA (${d.perc.toFixed(2)}% > 0,6%)</span>`;
-            } else {
-                badge.innerHTML = `<span class="badge-anp anp-sobra">⚠️ SOBRA EXCESSIVA (+${d.perc.toFixed(2)}% > 0,6%)</span>`;
-            }
+            if (d.status_anp === 'CONFORME') badge.innerHTML = `<span class="badge-anp anp-conforme">✔ CONFORME ANP (Dentro de 0,6%)</span>`;
+            else if (d.status_anp === 'PERDA_EXCESSIVA') badge.innerHTML = `<span class="badge-anp anp-perda">🚨 PERDA EXCESSIVA (${d.perc.toFixed(2)}% > 0,6%)</span>`;
+            else badge.innerHTML = `<span class="badge-anp anp-sobra">⚠️ SOBRA EXCESSIVA (+${d.perc.toFixed(2)}% > 0,6%)</span>`;
         }
 
         async function solicitarAuditoriaIA() {
-            if (!tanqueAtual) return;
-            const d = getDadosSimulados();
-            const btn = document.getElementById('btn-ia-scan');
-            const output = document.getElementById('ia-output');
-
-            btn.disabled = true;
-            btn.innerHTML = `<span>Analisando...</span> ⏳`;
-            output.innerHTML = `Conectando ao modelo de IA e processando variáveis térmicas e volumétricas...`;
-
+            if (!tanqueAtual) return; const d = getDadosSimulados();
+            const btn = document.getElementById('btn-ia-scan'); const output = document.getElementById('ia-output');
+            btn.disabled = true; btn.innerHTML = `Analisando Variação... ⏳`; output.innerHTML = `Processando leituras dos bicos e variáveis térmicas...`;
             try {
                 const res = await fetch('/ia/auditar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        tanque: `Tanque 0${tanqueAtual.numero_tanque}`,
-                        combustivel: tanqueAtual.tipo_combustivel,
-                        capacidade: tanqueAtual.capacidade_maxima,
+                        tanque: `Tanque 0${tanqueAtual.numero_tanque}`, combustivel: tanqueAtual.tipo_combustivel, capacidade: tanqueAtual.capacidade_maxima,
                         data_movimento: document.getElementById('lmc-data').value || new Date().toISOString().split('T')[0],
-                        estoque_inicial: d.ini,
-                        recebimentos: d.rec,
-                        vendas: d.ven,
-                        estoque_escritural: d.escritural,
-                        estoque_fisico: d.fis,
-                        perda_sobra: d.variacao,
-                        percentual_variacao: d.perc,
-                        status_anp: d.status_anp
+                        estoque_inicial: d.ini, recebimentos: d.rec, vendas: d.ven, estoque_escritural: d.escritural, estoque_fisico: d.fis, perda_sobra: d.variacao, percentual_variacao: d.perc, status_anp: d.status_anp
                     })
                 });
-
-                const data = await res.json();
-                output.innerText = data.parecer_ia;
-            } catch (err) {
-                console.error(err);
-                output.innerText = 'Falha ao conectar com o serviço de IA.';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<span>Auditar com Gemini</span> ✨`;
-            }
+                const data = await res.json(); output.innerText = data.parecer_ia;
+            } catch (err) { output.innerText = 'Falha ao conectar com o serviço de IA.'; }
+            finally { btn.disabled = false; btn.innerHTML = `Gerar Parecer IA`; }
         }
 
         async function salvarFechamentoLMC() {
-            if (!tanqueAtual) return;
+            if (!tanqueAtual) return; const d = getDadosSimulados();
             const data_movimento = document.getElementById('lmc-data').value;
-            const estoque_inicial = parseFloat(document.getElementById('lmc-estoque-ini').value);
-            const recebimentos = parseFloat(document.getElementById('lmc-recebimentos').value) || 0;
-            const vendas = parseFloat(document.getElementById('lmc-vendas').value);
-            const estoque_fisico = parseFloat(document.getElementById('lmc-estoque-fis').value);
-
-            if (isNaN(vendas) || isNaN(estoque_fisico)) return alert('Preencha as Vendas e o Estoque Físico.');
+            if (isNaN(d.ven) || isNaN(d.fis) || d.fis === 0) return alert('Registe o fechamento dos bicos e a régua física do tanque.');
 
             const res = await fetch('/lmc/fechamento', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tanque_id: tanqueAtual.id, data_movimento, estoque_inicial, recebimentos, vendas, estoque_fisico })
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tanque_id: tanqueAtual.id, data_movimento, estoque_inicial: d.ini, recebimentos: d.rec, vendas: d.ven, estoque_fisico: d.fis })
             });
-
-            if (res.ok) {
-                mostrarToast('Fechamento gravado no Supabase!');
-                carregarHistoricoLMC();
-                carregarSugestaoEstoque();
-            } else {
-                const e = await res.json();
-                alert(e.detail || 'Erro ao registrar fechamento.');
-            }
+            if (res.ok) { mostrarToast('Fechamento gravado no Livro (Supabase)!'); carregarHistoricoLMC(); carregarSugestaoEstoque(); resetarBicos(); lmcReguaCm.value=''; }
+            else { alert('Erro ao registrar fechamento.'); }
         }
 
         async function carregarHistoricoLMC() {
-            const res = await fetch('/lmc/fechamentos');
-            const fechamentos = await res.json();
+            const res = await fetch('/lmc/fechamentos'); const fechamentos = await res.json();
             const tb = document.getElementById('historico-lmc-body');
-            if (fechamentos.length === 0) {
-                tb.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted)">Nenhum fechamento registrado.</td></tr>`;
-                return;
-            }
+            if (fechamentos.length === 0) { tb.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted)">Nenhum fechamento registrado.</td></tr>`; return; }
             tb.innerHTML = fechamentos.map(f => {
                 const t = tanques.find(x => x.id === f.tanque_id) || { numero_tanque: f.tanque_id };
-                let badgeClass = 'anp-conforme';
-                if (f.status_anp === 'PERDA_EXCESSIVA') badgeClass = 'anp-perda';
-                if (f.status_anp === 'SOBRA_EXCESSIVA') badgeClass = 'anp-sobra';
-
-                return `
-                    <tr>
-                        <td>${f.data_movimento}</td>
-                        <td><strong>Tanque 0${t.numero_tanque}</strong></td>
-                        <td>${f.estoque_inicial.toLocaleString('pt-BR')} L</td>
-                        <td>${f.recebimentos.toLocaleString('pt-BR')} L</td>
-                        <td>${f.vendas.toLocaleString('pt-BR')} L</td>
-                        <td><strong>${f.estoque_fisico.toLocaleString('pt-BR')} L</strong></td>
-                        <td style="color:${f.perda_sobra >= 0 ? '#34d399' : '#f87171'}">${f.perda_sobra > 0 ? '+' : ''}${f.perda_sobra.toLocaleString('pt-BR')} L</td>
-                        <td>${f.percentual_variacao.toFixed(3)}%</td>
-                        <td><span class="badge-anp ${badgeClass}" style="font-size:0.75rem; padding:4px 8px;">${f.status_anp}</span></td>
-                    </tr>
-                `;
+                let bc = 'anp-conforme'; if (f.status_anp === 'PERDA_EXCESSIVA') bc = 'anp-perda'; if (f.status_anp === 'SOBRA_EXCESSIVA') bc = 'anp-sobra';
+                return `<tr><td>${f.data_movimento}</td><td><strong>Tq 0${t.numero_tanque}</strong></td><td>${f.estoque_inicial.toLocaleString('pt-BR')} L</td><td>${f.recebimentos.toLocaleString('pt-BR')} L</td><td>${f.vendas.toLocaleString('pt-BR')} L</td><td><strong>${f.estoque_fisico.toLocaleString('pt-BR')} L</strong></td><td style="color:${f.perda_sobra >= 0 ? '#34d399' : '#f87171'}">${f.perda_sobra > 0 ? '+' : ''}${f.perda_sobra.toLocaleString('pt-BR')} L</td><td><span class="badge-anp ${bc}" style="font-size:0.7rem; padding:4px 6px;">${f.status_anp.replace('_',' ')}</span></td></tr>`;
             }).join('');
         }
 
-        function mostrarToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-
-        (async () => {
-            await carregarTanques();
-            await carregarHistoricoRegua();
-        })();
+        function mostrarToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 3000); }
+        (async () => { await carregarTanques(); })();
     </script>
-
-    <!-- MODAL LOGIN -->
-    <div id="modal-login" style="position:fixed; inset:0; background:rgba(7,10,18,0.95); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
-        <div style="background:#131b2e; border:1px solid #23304e; padding:2.5rem; border-radius:20px; width:100%; max-width:400px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
-            <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔒</div>
-            <h2 style="font-size:1.4rem; font-weight:800; color:#fff; margin-bottom:0.3rem;">PostoControl AI</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:1.5rem;">Acesso restrito à gestão de pista</p>
-            <input type="text" id="login-user" placeholder="Utilizador" style="width:100%; background:#090e18; border:1px solid #23304e; border-radius:12px; padding:0.9rem; color:#fff; margin-bottom:1rem; outline:none;">
-            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; background:#090e18; border:1px solid #23304e; border-radius:12px; padding:0.9rem; color:#fff; margin-bottom:1.5rem; outline:none;">
-            <button onclick="efetuarLogin()" style="width:100%; background:linear-gradient(135deg,#2563eb,#1d4ed8); border:none; color:#fff; padding:1rem; border-radius:12px; font-weight:700; cursor:pointer; font-size:1rem;">Entrar no Sistema</button>
-            <div id="login-erro" style="color:#ef4444; font-size:0.8rem; margin-top:1rem; display:none;">Credenciais inválidas.</div>
-        </div>
-    </div>
-    <script>
-        async function efetuarLogin() {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
-            try {
-                const res = await fetch('/auth/login', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({usuario: u, senha: p})
-                });
-                if(res.ok) {
-                    sessionStorage.setItem('posto_auth', 'true');
-                    document.getElementById('modal-login').style.display = 'none';
-                } else {
-                    document.getElementById('login-erro').style.display = 'block';
-                }
-            } catch(e) { alert('Erro ao autenticar'); }
-        }
-        if (sessionStorage.getItem('posto_auth') === 'true') {
-            document.addEventListener("DOMContentLoaded", () => {
-                const m = document.getElementById('modal-login');
-                if (m) m.style.display = 'none';
-            });
-        }
-    </script>
-    
 </body>
 </html>
