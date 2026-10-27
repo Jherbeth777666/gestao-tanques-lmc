@@ -428,11 +428,19 @@
             const p = document.getElementById('login-pass').value;
             try {
                 const res = await fetch('/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({usuario: u, senha: p}) });
-                if(res.ok) { sessionStorage.setItem('posto_auth', 'true'); document.getElementById('modal-login').style.display = 'none'; } 
+                if(res.ok) { const data = await res.json(); sessionStorage.setItem('posto_token', data.token); document.getElementById('modal-login').style.display = 'none'; carregarTanques(); }
                 else { document.getElementById('login-erro').style.display = 'block'; }
             } catch(e) { alert('Erro ao conectar.'); }
         }
-        if (sessionStorage.getItem('posto_auth') === 'true') { document.addEventListener("DOMContentLoaded", () => { const m = document.getElementById('modal-login'); if (m) m.style.display = 'none'; }); }
+
+        // Envia o token em toda chamada; sessão expirada reabre o login.
+        async function api(url, opcoes = {}) {
+            const headers = { ...(opcoes.headers || {}), 'Authorization': `Bearer ${sessionStorage.getItem('posto_token') || ''}` };
+            const res = await fetch(url, { ...opcoes, headers });
+            if (res.status === 401) { sessionStorage.removeItem('posto_token'); document.getElementById('modal-login').style.display = 'flex'; throw new Error('Sessão expirada'); }
+            return res;
+        }
+        if (sessionStorage.getItem('posto_token')) { document.addEventListener("DOMContentLoaded", () => { const m = document.getElementById('modal-login'); if (m) m.style.display = 'none'; }); }
 
         // --- SISTEMA CORE ---
         let tanques = []; let tanqueAtual = null;
@@ -460,7 +468,7 @@
         }
 
         async function carregarTanques() {
-            const res = await fetch('/tanques/'); tanques = await res.json();
+            const res = await api('/tanques/'); tanques = await res.json();
             renderizarTanques(); if (tanques.length > 0) selecionarTanque(tanques[0].id);
         }
 
@@ -498,7 +506,7 @@
 
         async function salvarMedicao() {
             const cm = parseFloat(inputCm.value); if (isNaN(cm) || cm < 0) return alert('Informe uma altura válida na régua.');
-            const res = await fetch('/medicoes/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tanque_id: tanqueAtual.id, altura_cm: cm }) });
+            const res = await api('/medicoes/', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tanque_id: tanqueAtual.id, altura_cm: cm }) });
             if (res.ok) { mostrarToast('Aferição gravada com sucesso!'); }
         }
 
@@ -541,7 +549,7 @@
         async function carregarSugestaoEstoque() {
             if (!tanqueAtual) return; document.getElementById('lmc-data').value = new Date().toISOString().split('T')[0];
             try {
-                const res = await fetch(`/lmc/ultimo-estoque/${tanqueAtual.id}`); const data = await res.json();
+                const res = await api(`/lmc/ultimo-estoque/${tanqueAtual.id}`); const data = await res.json();
                 document.getElementById('lmc-estoque-ini').value = data.estoque_inicial_sugerido || 0;
             } catch (e) {}
             simularLMC();
@@ -588,7 +596,7 @@
             const btn = document.getElementById('btn-ia-scan'); const output = document.getElementById('ia-output');
             btn.disabled = true; btn.innerHTML = `Analisando Variação... ⏳`; output.innerHTML = `Processando leituras dos bicos e variáveis térmicas...`;
             try {
-                const res = await fetch('/ia/auditar', {
+                const res = await api('/ia/auditar', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         tanque: `Tanque 0${tanqueAtual.numero_tanque}`, combustivel: tanqueAtual.tipo_combustivel, capacidade: tanqueAtual.capacidade_maxima,
@@ -606,7 +614,7 @@
             const data_movimento = document.getElementById('lmc-data').value;
             if (isNaN(d.ven) || isNaN(d.fis) || d.fis === 0) return alert('Registe o fechamento dos bicos e a régua física do tanque.');
 
-            const res = await fetch('/lmc/fechamento', {
+            const res = await api('/lmc/fechamento', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tanque_id: tanqueAtual.id, data_movimento, estoque_inicial: d.ini, recebimentos: d.rec, vendas: d.ven, estoque_fisico: d.fis })
             });
@@ -615,7 +623,7 @@
         }
 
         async function carregarHistoricoLMC() {
-            const res = await fetch('/lmc/fechamentos'); const fechamentos = await res.json();
+            const res = await api('/lmc/fechamentos'); const fechamentos = await res.json();
             const tb = document.getElementById('historico-lmc-body');
             if (fechamentos.length === 0) { tb.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted)">Nenhum fechamento registrado.</td></tr>`; return; }
             tb.innerHTML = fechamentos.map(f => {
@@ -626,7 +634,7 @@
         }
 
         function mostrarToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 3000); }
-        (async () => { await carregarTanques(); })();
+        if (sessionStorage.getItem('posto_token')) { carregarTanques(); }
     </script>
 </body>
 </html>
